@@ -241,7 +241,7 @@ const Card = ({ data, onClick, label, feedback, isRetro = false, explodingSymbol
         }}
         transition={isRetro ? { duration: 0.15, ease: [0, 0, 1, 1] } : { duration: 0.2 }}
         key={data.map(d => d.symbol).join('')}
-        className={`relative w-[42vh] h-[42vh] md:w-[38vh] md:h-[38vh] lg:w-[550px] lg:h-[550px] max-w-[90vw] rounded-full border-[8px] sm:border-[12px] overflow-hidden transition-all ${isRetro ? 'bg-[var(--retro-bg-card)] retro-card-frame' : 'bg-[#fdfdfd] card-shadow'}`}
+        className={`relative w-[36vh] h-[36vh] md:w-[38vh] md:h-[38vh] lg:w-[550px] lg:h-[550px] max-w-[85vw] md:max-w-[90vw] rounded-full border-[8px] sm:border-[12px] overflow-hidden transition-all ${isRetro ? 'bg-[var(--retro-bg-card)] retro-card-frame' : 'bg-[#fdfdfd] card-shadow'}`}
       >
         <AnimatePresence>
           {data.map((item) => {
@@ -261,9 +261,9 @@ const Card = ({ data, onClick, label, feedback, isRetro = false, explodingSymbol
                 style={{
                   left: `${item.x}%`,
                   top: `${item.y}%`,
-                  fontSize: 'clamp(1.5rem, 6vh, 12rem)',
-                  width: 'clamp(2rem, 7vh, 14rem)',
-                  height: 'clamp(2rem, 7vh, 14rem)',
+                  fontSize: 'clamp(1rem, 5vh, 10rem)',
+                  width: 'clamp(1.5rem, 6vh, 12rem)',
+                  height: 'clamp(1.5rem, 6vh, 12rem)',
                   WebkitTapHighlightColor: 'transparent'
                 }}
               >
@@ -1844,7 +1844,7 @@ function DobbleGame() {
           </div>
           
           {/* Middle Stats Bar */}
-          <div className="flex lg:flex-col items-center justify-center gap-4 z-20 pointer-events-auto my-4 lg:my-0 flex-shrink-0">
+          <div className="flex lg:flex-col items-center justify-center gap-4 z-20 pointer-events-auto my-2 lg:my-0 flex-shrink-0">
             <div className={`rounded-xl p-2 flex items-center gap-2 shadow-2xl ${isRetro ? 'retro-panel' : 'bg-black/30 backdrop-blur-xl border border-white/10'}`}>
               <div className={`p-2 rounded-lg ${isRetro ? 'bg-[var(--retro-gold)]' : 'bg-yellow-400 shadow-lg shadow-yellow-400/20'}`}>
                 <Trophy className="w-4 h-4 text-yellow-900" />
@@ -1884,7 +1884,7 @@ function DobbleGame() {
             </div>
           </div>
 
-          <div className="flex-1 flex justify-start -mt-8 lg:mt-0">
+          <div className="flex-1 flex justify-start -mt-[10vh] lg:mt-0">
             {playerCard && <Card data={playerCard} onClick={handleSymbolClick} feedback={feedback} isRetro={isRetro} explodingSymbols={explodingSymbols} />}
           </div>
         </div>
