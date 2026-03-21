@@ -241,7 +241,7 @@ const Card = ({ data, onClick, label, feedback, isRetro = false, explodingSymbol
         }}
         transition={isRetro ? { duration: 0.15, ease: [0, 0, 1, 1] } : { duration: 0.2 }}
         key={data.map(d => d.symbol).join('')}
-        className={`relative w-[50vh] h-[50vh] md:w-[38vh] md:h-[38vh] lg:w-[550px] lg:h-[550px] max-w-[95vw] rounded-full border-[8px] sm:border-[12px] overflow-hidden transition-all ${isRetro ? 'bg-[var(--retro-bg-card)] retro-card-frame' : 'bg-[#fdfdfd] card-shadow'}`}
+        className={`relative w-[42vh] h-[42vh] md:w-[38vh] md:h-[38vh] lg:w-[550px] lg:h-[550px] max-w-[90vw] rounded-full border-[8px] sm:border-[12px] overflow-hidden transition-all ${isRetro ? 'bg-[var(--retro-bg-card)] retro-card-frame' : 'bg-[#fdfdfd] card-shadow'}`}
       >
         <AnimatePresence>
           {data.map((item) => {
@@ -1793,13 +1793,13 @@ function DobbleGame() {
   }
 
   return (
-    <div className={`min-h-screen ${bg} flex flex-col items-center justify-center p-4 relative overflow-hidden ${isRetro ? 'retro-theme retro-scanlines' : 'font-sans'}`}>
+    <div className={`h-[100dvh] w-full ${bg} flex flex-col items-center justify-center p-2 relative overflow-hidden ${isRetro ? 'retro-theme retro-scanlines' : 'font-sans'}`}>
 
       {/* Background Pattern */}
       {!isRetro && <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#fff 2px, transparent 2px)', backgroundSize: '30px 30px' }}></div>}
 
       {/* Main Game Container */}
-      <div className="relative w-full max-w-lg md:max-w-4xl lg:max-w-6xl flex flex-col items-center justify-start p-4">
+      <div className="relative w-full h-full max-w-lg md:max-w-4xl lg:max-w-6xl flex flex-col items-center justify-start py-4">
         
         {/* Header Stats */}
         <div className="absolute top-0 left-0 w-full p-3 flex justify-between items-start z-20 pointer-events-none">
@@ -1879,9 +1879,9 @@ function DobbleGame() {
         </div>
 
         {/* Game Area */}
-        <div className={`flex flex-col lg:flex-row items-center justify-center gap-0 lg:gap-12 w-full z-10 mt-2 lg:mt-8 ${isPaused ? 'blur-md pointer-events-none' : ''}`}>
+        <div className={`flex flex-col lg:flex-row items-center justify-center gap-0 lg:gap-12 w-full z-10 mt-14 lg:mt-8 flex-1 ${isPaused ? 'blur-md pointer-events-none' : ''}`}>
           {centerCard && <Card data={centerCard} onClick={handleSymbolClick} label="Target" feedback={feedback} isRetro={isRetro} explodingSymbols={explodingSymbols} />}
-          <div className="-mt-6 lg:mt-0">
+          <div className="-mt-8 lg:mt-0">
             {playerCard && <Card data={playerCard} onClick={handleSymbolClick} feedback={feedback} isRetro={isRetro} explodingSymbols={explodingSymbols} />}
           </div>
         </div>
