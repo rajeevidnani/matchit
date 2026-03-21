@@ -1844,8 +1844,8 @@ function DobbleGame() {
           </div>
           
           {/* Stats Bar */}
-          <div className="absolute top-[max(env(safe-area-inset-top),0.5rem)] left-1/2 -translate-x-1/2 lg:static lg:transform-none flex flex-row lg:flex-col items-center justify-center gap-2 lg:gap-4 z-20 pointer-events-auto flex-shrink-0 w-[95vw] lg:w-auto lg:mt-0">
-            <div className={`rounded-xl p-1.5 flex items-center gap-2 shadow-2xl flex-1 lg:flex-none justify-start lg:justify-center w-full lg:w-32 ${isRetro ? 'retro-panel' : 'bg-black/30 backdrop-blur-xl border border-white/10'}`}>
+          <div className="absolute top-[max(env(safe-area-inset-top),0.5rem)] left-0 w-full px-4 lg:static lg:transform-none lg:w-auto lg:px-0 flex flex-row lg:flex-col items-center justify-between lg:justify-center gap-2 lg:gap-4 z-20 pointer-events-auto flex-shrink-0 lg:mt-0">
+            <div className={`rounded-xl p-1.5 flex items-center gap-2 shadow-2xl justify-start w-32 ${isRetro ? 'retro-panel' : 'bg-black/30 backdrop-blur-xl border border-white/10'}`}>
               <div className={`p-1.5 rounded-lg ${isRetro ? 'bg-[var(--retro-gold)]' : 'bg-yellow-400 shadow-lg shadow-yellow-400/20'}`}>
                 <Trophy className="w-4 h-4 text-yellow-900" />
               </div>
@@ -1857,7 +1857,7 @@ function DobbleGame() {
               </div>
             </div>
 
-            <div className={`rounded-xl p-1.5 flex items-center gap-2 shadow-2xl flex-1 lg:flex-none justify-start lg:justify-center w-full lg:w-32 ${isRetro ? 'retro-panel' : 'bg-black/30 backdrop-blur-xl border border-white/10'}`}>
+            <div className={`rounded-xl p-1.5 flex items-center gap-2 shadow-2xl justify-start w-32 ${isRetro ? 'retro-panel' : 'bg-black/30 backdrop-blur-xl border border-white/10'}`}>
               <div className={`p-1.5 rounded-lg ${isRetro ? (!isPracticeMode && timeLeft <= 10 ? 'bg-[var(--retro-red)]/20 text-[var(--retro-red)]' : 'bg-[var(--retro-cyan)]/20 text-[var(--retro-cyan)]') : (!isPracticeMode && timeLeft <= 10 ? 'bg-red-400/20 text-red-400 shadow-lg shadow-red-400/10' : 'bg-blue-400/20 text-blue-400 shadow-lg shadow-blue-400/10')}`}>
                 <Clock className="w-4 h-4" />
               </div>
