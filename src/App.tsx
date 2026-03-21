@@ -532,6 +532,7 @@ function DobbleGame() {
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(60);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isPracticeMode, setIsPracticeMode] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
@@ -839,19 +840,19 @@ function DobbleGame() {
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    if (isPlaying && !isPaused && timeLeft > 0) {
+    if (isPlaying && !isPaused && !isPracticeMode && timeLeft > 0) {
       timer = setInterval(() => {
         setTimeLeft(t => t - 1);
       }, 1000);
-    } else if (timeLeft === 0 && isPlaying) {
+    } else if (!isPracticeMode && timeLeft === 0 && isPlaying) {
       setGameOver(true);
       setIsPlaying(false);
       saveScore(score, correctClicks, incorrectClicks);
     }
     return () => clearInterval(timer);
-  }, [isPlaying, isPaused, timeLeft]);
+  }, [isPlaying, isPaused, timeLeft, isPracticeMode]);
 
-  const startGame = useCallback((themeOverride?: string | React.MouseEvent) => {
+  const startGame = useCallback((themeOverride?: string | React.MouseEvent, isPractice: boolean = false) => {
     const activeTheme = typeof themeOverride === 'string' ? themeOverride : theme;
     let symbols: string[] = [];
     if (activeTheme === 'standard') symbols = EMOJIS;
@@ -877,6 +878,7 @@ function DobbleGame() {
     setTimeLeft(60);
     setGameOver(false);
     setIsPaused(false);
+    setIsPracticeMode(isPractice);
     setIsPlaying(true);
   }, [theme, customThemeEmojis]);
 
@@ -901,7 +903,9 @@ function DobbleGame() {
         if (deck.length === 0) {
           setGameOver(true);
           setIsPlaying(false);
-          saveScore(score + 1, correctClicks + 1, incorrectClicks);
+          if (!isPracticeMode) {
+            saveScore(score + 1, correctClicks + 1, incorrectClicks);
+          }
         } else {
           setPlayerCard(centerCard);
           const newDeck = [...deck];
@@ -916,7 +920,7 @@ function DobbleGame() {
       setIncorrectClicks(c => c + 1);
       setTimeout(() => setFeedback(null), 400);
     }
-  }, [deck, playerCard, centerCard, gameOver, isPlaying, score, profileName]);
+  }, [deck, playerCard, centerCard, gameOver, isPlaying, score, profileName, isPracticeMode]);
 
   if (!isAuthReady) {
     return (
@@ -1551,7 +1555,7 @@ function DobbleGame() {
               />
             </div>
 
-            <div className="h-[200px] overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar relative">
+            <div className="h-[400px] overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar relative flex-shrink-0">
               <AnimatePresence mode="wait">
                 {activeTab === 'saved-themes' && (
                   <motion.div 
@@ -1641,6 +1645,24 @@ function DobbleGame() {
                 )}
               </AnimatePresence>
             </div>
+
+            <div className="mt-6">
+              {isRetro ? (
+                <button
+                  onClick={() => startGame(undefined, true)}
+                  className="retro-btn w-full py-3 rounded-xl font-bold text-xs mb-4 flex items-center justify-center gap-2 opacity-80"
+                >
+                  PRACTICE MODE
+                </button>
+              ) : (
+                <button
+                  onClick={() => startGame(undefined, true)}
+                  className="w-full py-3 bg-white/20 text-white rounded-2xl font-bold text-md hover:bg-white/30 transition shadow-md flex items-center justify-center gap-2 mb-4 backdrop-blur-md border border-white/10"
+                >
+                  Practice Mode
+                </button>
+              )}
+            </div>
           </div>
 
           <AnimatePresence>
@@ -1719,11 +1741,11 @@ function DobbleGame() {
           <div className={`rounded-xl p-1.5 flex items-center gap-2 shadow-2xl pointer-events-auto ${isRetro ? 'retro-panel' : 'bg-black/30 backdrop-blur-xl border border-white/10'}`}>
             <div className="text-right">
               <div className={`text-[8px] font-black uppercase tracking-[0.2em] mb-0 ${isRetro ? 'text-[var(--retro-text-dim)]' : 'text-white/50'}`}>Time</div>
-              <div className={`font-black text-sm leading-none ${timeLeft <= 10 ? (isRetro ? 'text-[var(--retro-red)]' : 'text-red-400 animate-pulse') : (isRetro ? 'text-[var(--retro-text)]' : 'text-white')}`}>
-                {timeLeft}s
+              <div className={`font-black text-sm leading-none ${!isPracticeMode && timeLeft <= 10 ? (isRetro ? 'text-[var(--retro-red)]' : 'text-red-400 animate-pulse') : (isRetro ? 'text-[var(--retro-text)]' : 'text-white')}`}>
+                {isPracticeMode ? '∞' : `${timeLeft}s`}
               </div>
             </div>
-            <div className={`p-1.5 rounded-lg ${isRetro ? (timeLeft <= 10 ? 'bg-[var(--retro-red)]/20 text-[var(--retro-red)]' : 'bg-[var(--retro-cyan)]/20 text-[var(--retro-cyan)]') : (timeLeft <= 10 ? 'bg-red-400/20 text-red-400 shadow-lg shadow-red-400/10' : 'bg-blue-400/20 text-blue-400 shadow-lg shadow-blue-400/10')}`}>
+            <div className={`p-1.5 rounded-lg ${isRetro ? (!isPracticeMode && timeLeft <= 10 ? 'bg-[var(--retro-red)]/20 text-[var(--retro-red)]' : 'bg-[var(--retro-cyan)]/20 text-[var(--retro-cyan)]') : (!isPracticeMode && timeLeft <= 10 ? 'bg-red-400/20 text-red-400 shadow-lg shadow-red-400/10' : 'bg-blue-400/20 text-blue-400 shadow-lg shadow-blue-400/10')}`}>
               <Clock className="w-3.5 h-3.5" />
             </div>
           </div>
@@ -1739,7 +1761,7 @@ function DobbleGame() {
             {isPaused ? <Play className={`w-4 h-4 ${isRetro ? '' : 'fill-white'}`} /> : <Pause className={`w-4 h-4 ${isRetro ? '' : 'fill-white'}`} />}
           </button>
           <button
-            onClick={startGame}
+            onClick={() => startGame(undefined, isPracticeMode)}
             className={`rounded-xl p-2.5 ${isRetro ? 'retro-btn' : 'bg-black/30 backdrop-blur-xl text-white hover:bg-white/10 transition-all border border-white/10 shadow-2xl active:scale-90'}`}
             title="Restart"
           >
@@ -1785,7 +1807,7 @@ function DobbleGame() {
                     Resume Game
                   </button>
                   <button
-                    onClick={startGame}
+                    onClick={() => startGame(undefined, isPracticeMode)}
                     className={`w-full py-4 rounded-xl font-bold flex items-center justify-center gap-2 ${isRetro ? 'retro-btn text-xs' : 'bg-gray-100 text-gray-900 text-xl hover:bg-gray-200 transition'}`}
                   >
                     <RotateCcw className="w-6 h-6" />
@@ -1900,7 +1922,7 @@ function DobbleGame() {
                 </div>
 
                 <button
-                  onClick={startGame}
+                  onClick={() => startGame(undefined, isPracticeMode)}
                   className={`w-full py-4 rounded-xl font-bold flex items-center justify-center gap-2 ${isRetro ? 'retro-btn text-sm' : 'bg-purple-600 text-white text-xl hover:bg-purple-700 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1'}`}
                 >
                   <RotateCcw className="w-6 h-6" />
