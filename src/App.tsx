@@ -1803,8 +1803,8 @@ function DobbleGame() {
       {/* Main Game Container */}
       <div className="relative w-full h-full max-w-lg md:max-w-4xl lg:max-w-6xl flex flex-col items-center justify-start py-4">
         
-        {/* Vertical Control Bar */}
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-30">
+        {/* Top Control Bar */}
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 flex flex-row items-center gap-2 z-30">
           <button
             onClick={() => setIsPaused(!isPaused)}
             className={`rounded-xl p-2.5 ${isRetro ? 'retro-btn' : 'bg-black/30 backdrop-blur-xl text-white hover:bg-white/10 transition-all border border-white/10 shadow-2xl active:scale-90'}`}
@@ -1829,7 +1829,7 @@ function DobbleGame() {
           {isPlaying && !hasLifelineUsed && (
             <button
               onClick={useLifeline}
-              className={`rounded-xl p-2.5 mt-2 ${isRetro ? 'retro-btn border-[var(--retro-gold)] text-[var(--retro-gold)]' : 'bg-yellow-400/20 backdrop-blur-xl text-yellow-400 hover:bg-yellow-400/40 transition-all border border-yellow-400/30 shadow-[0_0_15px_rgba(250,204,21,0.4)] active:scale-90'}`}
+              className={`rounded-xl p-2.5 ${isRetro ? 'retro-btn border-[var(--retro-gold)] text-[var(--retro-gold)]' : 'bg-yellow-400/20 backdrop-blur-xl text-yellow-400 hover:bg-yellow-400/40 transition-all border border-yellow-400/30 shadow-[0_0_15px_rgba(250,204,21,0.4)] active:scale-90'}`}
               title="Use Lifeline (Removes 2 incorrect symbols)"
             >
               <Wand2 className="w-4 h-4" />
