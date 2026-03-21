@@ -109,6 +109,23 @@ const VEHICLE_EMOJIS = [
   "🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🛻","🚚","🚛","🚜","🦯","🦽","🦼","🛴","🚲","🛵","🏍️","🛺","🚨","🚔","🚍","🚘","🚖","🚡","🚠","🚟","🚃","🚋","🚞","🚝","🚄","🚅","🚈","🚂","🚆","🚇","🚊","🚉","✈️","🛫","🛬","🛩️","💺","🛰️","🚀","🛸","🚁","🛶","⛵","🚤","🛥️","🛳️","⛴️"
 ];
 
+const KINDERGARTEN_MIX = [
+  "A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
+  "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
+  "U", "V", "W", "X", "Y", "Z",
+  "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+  "❤️", "⭐", "🌙", "☀️", "☁️", "🔴", "🔵", "🟡", "🟩", "🔺",
+  "🔶", "💜", "🤍", "🖤", "🤎", "💖", "🔲", "🔳", "🎈", "🧸", "🎨"
+];
+
+const FIRST_WORDS = [
+  "0️⃣", "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣",
+  "⭐", "❤️", "🔴", "🟦",
+  "🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼", "🐸", "🐷", "🐵", "🐔",
+  "🍎", "🍌", "🍉", "🍇", "🍓", "🍕", "🍔", "🍟", "🌭", "🍿", "🍦", "🍩", "🍪", "🎂", "🍰",
+  "🎈", "🧸", "⚽", "🚗", "☀️", "🌙", "☁️", "☂️", "🚲", "📚", "✏️", "🖍️", "🎸", "🥁", "🎹", "🏠"
+];
+
 const LANDMARK_IMAGES: string[] = Array.from({length: 57}, (_, i) =>
   `/landmarks/${String(i + 1).padStart(2, '0')}.png`
 );
@@ -160,7 +177,7 @@ const FUNNY_MESSAGES = [
   "The ultimate collection"
 ];
 
-type Theme = 'standard' | 'nature' | 'fruits' | 'landmarks' | 'custom';
+type Theme = 'standard' | 'nature' | 'fruits' | 'landmarks' | 'custom' | 'kindergarten' | 'first_words';
 
 const getSlots = () => {
   const slots = [{ x: 50, y: 50 }];
@@ -539,6 +556,7 @@ function DobbleGame() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPracticeMode, setIsPracticeMode] = useState(false);
   const [practiceDifficulty, setPracticeDifficulty] = useState<'easy' | 'medium' | 'hard'>('hard');
+  const [practiceTheme, setPracticeTheme] = useState<Theme>('kindergarten');
   const [isPaused, setIsPaused] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
@@ -865,6 +883,8 @@ function DobbleGame() {
     else if (activeTheme === 'nature') symbols = NATURE_EMOJIS;
     else if (activeTheme === 'fruits') symbols = FRUIT_EMOJIS;
     else if (activeTheme === 'landmarks') symbols = LANDMARK_IMAGES;
+    else if (activeTheme === 'kindergarten') symbols = KINDERGARTEN_MIX;
+    else if (activeTheme === 'first_words') symbols = FIRST_WORDS;
     else if (activeTheme === 'custom') symbols = customThemeEmojis;
 
     if (symbols.length < 57) {
@@ -1657,11 +1677,29 @@ function DobbleGame() {
             <div className="mt-6">
               <div className="flex flex-col gap-2">
                 <div className="flex justify-center gap-1.5 mb-1">
+                  {([
+                    { id: 'kindergarten', label: '🔤 Kindergarten Mix' },
+                    { id: 'first_words', label: '🧸 First Words' }
+                  ] as const).map(pt => (
+                    <button
+                      key={pt.id}
+                      onClick={() => setPracticeTheme(pt.id as Theme)}
+                      className={`px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all flex-1 ${
+                        practiceTheme === pt.id
+                          ? (isRetro ? 'retro-btn border-[var(--retro-magenta)] text-[var(--retro-magenta)]' : 'bg-pink-500 text-white shadow-md')
+                          : (isRetro ? 'bg-[var(--retro-bg)] text-[var(--retro-text-dim)] border border-[var(--retro-border)] opacity-60 hover:opacity-100' : 'bg-white/10 text-white/60 hover:bg-white/20 border border-white/5')
+                      }`}
+                    >
+                      {pt.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex justify-center gap-1.5 mb-1">
                   {(['easy', 'medium', 'hard'] as const).map(diff => (
                     <button
                       key={diff}
                       onClick={() => setPracticeDifficulty(diff)}
-                      className={`px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${
+                      className={`px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all flex-1 ${
                         practiceDifficulty === diff
                           ? (isRetro ? 'retro-btn border-[var(--retro-cyan)] text-[var(--retro-cyan)]' : 'bg-purple-600 text-white shadow-md')
                           : (isRetro ? 'bg-[var(--retro-bg)] text-[var(--retro-text-dim)] border border-[var(--retro-border)] opacity-60 hover:opacity-100' : 'bg-white/10 text-white/60 hover:bg-white/20 border border-white/5')
@@ -1673,14 +1711,14 @@ function DobbleGame() {
                 </div>
                 {isRetro ? (
                   <button
-                    onClick={() => startGame(undefined, true)}
+                    onClick={() => startGame(practiceTheme, true)}
                     className="retro-btn w-full py-3 rounded-xl font-bold text-xs mb-4 flex items-center justify-center gap-2 opacity-80"
                   >
                     PRACTICE MODE
                   </button>
                 ) : (
                   <button
-                    onClick={() => startGame(undefined, true)}
+                    onClick={() => startGame(practiceTheme, true)}
                     className="w-full py-3 bg-white/20 text-white rounded-2xl font-bold text-md hover:bg-white/30 transition shadow-md flex items-center justify-center gap-2 mb-4 backdrop-blur-md border border-white/10"
                   >
                     Practice Mode
