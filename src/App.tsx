@@ -241,7 +241,7 @@ const Card = ({ data, onClick, label, feedback, isRetro = false, explodingSymbol
         }}
         transition={isRetro ? { duration: 0.15, ease: [0, 0, 1, 1] } : { duration: 0.2 }}
         key={data.map(d => d.symbol).join('')}
-        className={`relative w-[36vh] h-[36vh] md:w-[38vh] md:h-[38vh] lg:w-[550px] lg:h-[550px] max-w-[85vw] md:max-w-[90vw] rounded-full border-[8px] sm:border-[12px] overflow-hidden transition-all ${isRetro ? 'bg-[var(--retro-bg-card)] retro-card-frame' : 'bg-[#fdfdfd] card-shadow'}`}
+        className={`relative w-[46vh] h-[46vh] md:w-[38vh] md:h-[38vh] lg:w-[550px] lg:h-[550px] max-w-[85vw] md:max-w-[90vw] rounded-full border-[8px] sm:border-[12px] overflow-hidden transition-all ${isRetro ? 'bg-[var(--retro-bg-card)] retro-card-frame' : 'bg-[#fdfdfd] card-shadow'}`}
       >
         <AnimatePresence>
           {data.map((item) => {
@@ -1803,8 +1803,8 @@ function DobbleGame() {
       {/* Main Game Container */}
       <div className="relative w-full h-full max-w-lg md:max-w-4xl lg:max-w-6xl flex flex-col items-center justify-start py-4">
         
-        {/* Top Control Bar */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 flex flex-row items-center gap-2 z-30">
+        {/* Left Control Bar */}
+        <div className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2 z-30">
           <button
             onClick={() => setIsPaused(!isPaused)}
             className={`rounded-xl p-2.5 ${isRetro ? 'retro-btn' : 'bg-black/30 backdrop-blur-xl text-white hover:bg-white/10 transition-all border border-white/10 shadow-2xl active:scale-90'}`}
@@ -1838,13 +1838,13 @@ function DobbleGame() {
         </div>
 
         {/* Game Area */}
-        <div className={`flex flex-col lg:flex-row items-center justify-center gap-2 lg:gap-8 w-full z-10 flex-1 ${isPaused ? 'blur-md pointer-events-none' : ''}`}>
-          <div className="flex-1 flex justify-end">
+        <div className={`flex flex-col lg:flex-row items-center justify-center gap-0 lg:gap-8 w-full z-10 flex-1 mt-12 lg:mt-0 ${isPaused ? 'blur-md pointer-events-none' : ''}`}>
+          <div className="flex-1 flex justify-end z-10">
             {centerCard && <Card data={centerCard} onClick={handleSymbolClick} label="Target" feedback={feedback} isRetro={isRetro} explodingSymbols={explodingSymbols} />}
           </div>
           
-          {/* Middle Stats Bar */}
-          <div className="flex lg:flex-col items-center justify-center gap-4 z-20 pointer-events-auto my-2 lg:my-0 flex-shrink-0">
+          {/* Stats Bar */}
+          <div className="absolute top-[max(env(safe-area-inset-top),1rem)] left-1/2 -translate-x-1/2 lg:static lg:transform-none flex flex-row lg:flex-col items-center justify-center gap-2 lg:gap-4 z-20 pointer-events-auto flex-shrink-0 w-[90vw] lg:w-auto mt-2 lg:mt-0">
             <div className={`rounded-xl p-2 flex items-center gap-2 shadow-2xl ${isRetro ? 'retro-panel' : 'bg-black/30 backdrop-blur-xl border border-white/10'}`}>
               <div className={`p-2 rounded-lg ${isRetro ? 'bg-[var(--retro-gold)]' : 'bg-yellow-400 shadow-lg shadow-yellow-400/20'}`}>
                 <Trophy className="w-4 h-4 text-yellow-900" />
@@ -1884,7 +1884,7 @@ function DobbleGame() {
             </div>
           </div>
 
-          <div className="flex-1 flex justify-start -mt-[10vh] lg:mt-0">
+          <div className="flex-1 flex justify-start -mt-[15vh] lg:mt-0 z-0">
             {playerCard && <Card data={playerCard} onClick={handleSymbolClick} feedback={feedback} isRetro={isRetro} explodingSymbols={explodingSymbols} />}
           </div>
         </div>
