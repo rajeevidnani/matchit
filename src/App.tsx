@@ -250,15 +250,17 @@ const Card = ({ data, onClick, label, feedback, isRetro = false, explodingSymbol
               <motion.div
                 key={item.symbol}
                 onClick={() => onClick(item.symbol)}
-                initial={{ scale: 0, opacity: 0 }}
-                animate={isExploding ? { scale: 2, opacity: 0, filter: 'blur(8px)' } : { scale: 1, opacity: 1, filter: 'blur(0px)' }}
-                exit={{ scale: 0, opacity: 0 }}
+                initial={{ scale: 0, opacity: 0, x: "-50%", y: "-50%", rotate: item.rotation }}
+                animate={isExploding 
+                  ? { scale: item.scale * 2, opacity: 0, filter: 'blur(8px)', x: "-50%", y: "-50%", rotate: item.rotation + 90 } 
+                  : { scale: item.scale, opacity: 1, filter: 'blur(0px)', x: "-50%", y: "-50%", rotate: item.rotation }
+                }
+                exit={{ scale: 0, opacity: 0, x: "-50%", y: "-50%", rotate: item.rotation }}
                 transition={{ duration: isExploding ? 0.4 : 0.2 }}
                 className={`absolute flex items-center justify-center cursor-pointer select-none ${isRetro ? 'pixel-emoji' : ''} ${isExploding ? 'pointer-events-none' : ''}`}
                 style={{
                   left: `${item.x}%`,
                   top: `${item.y}%`,
-                  transform: `translate(-50%, -50%) rotate(${item.rotation}deg) scale(${item.scale})`,
                   fontSize: 'clamp(1.5rem, 6vh, 12rem)',
                   width: 'clamp(2rem, 7vh, 14rem)',
                   height: 'clamp(2rem, 7vh, 14rem)',
