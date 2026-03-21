@@ -223,7 +223,7 @@ function prepareCard(symbols: string[], difficulty: 'easy' | 'medium' | 'hard' =
   });
 }
 
-const Card = ({ data, onClick, label, feedback, isRetro = false }: { data: any[], onClick: (s: string) => void, label?: string, feedback?: 'correct' | 'incorrect' | null, isRetro?: boolean }) => {
+const Card = ({ data, onClick, label, feedback, isRetro = false, explodingSymbols = [] }: { data: any[], onClick: (s: string) => void, label?: string, feedback?: 'correct' | 'incorrect' | null, isRetro?: boolean, explodingSymbols?: string[] }) => {
   return (
     <div className="relative flex flex-col items-center">
       {label && (
@@ -243,47 +243,56 @@ const Card = ({ data, onClick, label, feedback, isRetro = false }: { data: any[]
         key={data.map(d => d.symbol).join('')}
         className={`relative w-[50vh] h-[50vh] md:w-[38vh] md:h-[38vh] lg:w-[550px] lg:h-[550px] max-w-[95vw] rounded-full border-[8px] sm:border-[12px] overflow-hidden transition-all ${isRetro ? 'bg-[var(--retro-bg-card)] retro-card-frame' : 'bg-[#fdfdfd] card-shadow'}`}
       >
-        {data.map((item) => (
-          <div
-            key={item.symbol}
-            onClick={() => onClick(item.symbol)}
-            className={`absolute flex items-center justify-center cursor-pointer select-none ${isRetro ? 'pixel-emoji' : ''}`}
-            style={{
-              left: `${item.x}%`,
-              top: `${item.y}%`,
-              transform: `translate(-50%, -50%) rotate(${item.rotation}deg) scale(${item.scale})`,
-              fontSize: 'clamp(1.5rem, 6vh, 12rem)',
-              width: 'clamp(2rem, 7vh, 14rem)',
-              height: 'clamp(2rem, 7vh, 14rem)',
-              WebkitTapHighlightColor: 'transparent'
-            }}
-          >
-            {item.symbol.startsWith('http') ? (
-              <div className="w-full h-full relative group">
-                <img
-                  src={item.symbol}
-                  alt="symbol"
-                  className={`w-full h-full object-cover rounded-full border-4 bg-white ${isRetro ? 'border-[var(--retro-border)] pixelated' : 'border-white shadow-[0_4px_10px_rgba(0,0,0,0.3)]'}`}
-                  referrerPolicy="no-referrer"
-                  style={isRetro ? { imageRendering: 'pixelated' } : {}}
-                />
-                {!isRetro && <div className="absolute inset-0 rounded-full border-2 border-white/50 pointer-events-none" />}
-              </div>
-            ) : item.symbol.endsWith('.png') ? (
-              <img
-                src={item.symbol}
-                alt="landmark"
-                className="w-full h-full object-contain drop-shadow-lg"
-                draggable={false}
-                style={isRetro ? { imageRendering: 'pixelated' } : {}}
-              />
-            ) : isRetro ? (
-              <PixelEmoji emoji={item.symbol} size="80%" resolution={32} />
-            ) : (
-              item.symbol
-            )}
-          </div>
-        ))}
+        <AnimatePresence>
+          {data.map((item) => {
+            const isExploding = explodingSymbols.includes(item.symbol);
+            return (
+              <motion.div
+                key={item.symbol}
+                onClick={() => onClick(item.symbol)}
+                initial={{ scale: 0, opacity: 0 }}
+                animate={isExploding ? { scale: 2, opacity: 0, filter: 'blur(8px)' } : { scale: 1, opacity: 1, filter: 'blur(0px)' }}
+                exit={{ scale: 0, opacity: 0 }}
+                transition={{ duration: isExploding ? 0.4 : 0.2 }}
+                className={`absolute flex items-center justify-center cursor-pointer select-none ${isRetro ? 'pixel-emoji' : ''} ${isExploding ? 'pointer-events-none' : ''}`}
+                style={{
+                  left: `${item.x}%`,
+                  top: `${item.y}%`,
+                  transform: `translate(-50%, -50%) rotate(${item.rotation}deg) scale(${item.scale})`,
+                  fontSize: 'clamp(1.5rem, 6vh, 12rem)',
+                  width: 'clamp(2rem, 7vh, 14rem)',
+                  height: 'clamp(2rem, 7vh, 14rem)',
+                  WebkitTapHighlightColor: 'transparent'
+                }}
+              >
+                {item.symbol.startsWith('http') ? (
+                  <div className="w-full h-full relative group">
+                    <img
+                      src={item.symbol}
+                      alt="symbol"
+                      className={`w-full h-full object-cover rounded-full border-4 bg-white ${isRetro ? 'border-[var(--retro-border)] pixelated' : 'border-white shadow-[0_4px_10px_rgba(0,0,0,0.3)]'}`}
+                      referrerPolicy="no-referrer"
+                      style={isRetro ? { imageRendering: 'pixelated' } : {}}
+                    />
+                    {!isRetro && <div className="absolute inset-0 rounded-full border-2 border-white/50 pointer-events-none" />}
+                  </div>
+                ) : item.symbol.endsWith('.png') ? (
+                  <img
+                    src={item.symbol}
+                    alt="landmark"
+                    className="w-full h-full object-contain drop-shadow-lg"
+                    draggable={false}
+                    style={isRetro ? { imageRendering: 'pixelated' } : {}}
+                  />
+                ) : isRetro ? (
+                  <PixelEmoji emoji={item.symbol} size="80%" resolution={32} />
+                ) : (
+                  item.symbol
+                )}
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
       </motion.div>
     </div>
   );
@@ -559,6 +568,7 @@ function DobbleGame() {
   const [practiceTheme, setPracticeTheme] = useState<Theme>('kindergarten');
   const [isPaused, setIsPaused] = useState(false);
   const [hasLifelineUsed, setHasLifelineUsed] = useState(false);
+  const [explodingSymbols, setExplodingSymbols] = useState<string[]>([]);
   const [gameOver, setGameOver] = useState(false);
   const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
   const [correctClicks, setCorrectClicks] = useState(0);
@@ -918,25 +928,26 @@ function DobbleGame() {
   }, []);
 
   const useLifeline = useCallback(() => {
-    if (hasLifelineUsed || isPaused || gameOver || !isPlaying || !playerCard || !centerCard) return;
+    if (hasLifelineUsed || isPaused || gameOver || !isPlaying || !playerCard || !centerCard || explodingSymbols.length > 0) return;
 
     setHasLifelineUsed(true);
 
-    // Find the single matching symbol between the two cards
     const match = playerCard.find(p => centerCard.some(c => c.symbol === p.symbol))?.symbol;
     if (!match) return;
 
-    // Helper to remove 2 random non-matching symbols from a card
-    const removeTwoNonMatching = (card: any[]) => {
-      const nonMatching = card.filter(s => s.symbol !== match);
-      const shuffledNonMatching = [...nonMatching].sort(() => 0.5 - Math.random());
-      const toRemove = new Set(shuffledNonMatching.slice(0, 2).map(s => s.symbol));
-      return card.filter(s => !toRemove.has(s.symbol));
-    };
+    const nonMatching = playerCard.filter(s => s.symbol !== match);
+    const shuffledNonMatching = [...nonMatching].sort(() => 0.5 - Math.random());
+    const toRemove = shuffledNonMatching.slice(0, 2).map(s => s.symbol);
+    
+    setExplodingSymbols(toRemove);
 
-    setPlayerCard(removeTwoNonMatching(playerCard));
-    setCenterCard(removeTwoNonMatching(centerCard));
-  }, [hasLifelineUsed, isPaused, gameOver, isPlaying, playerCard, centerCard]);
+    // Wait for explosion animation to finish before actually removing them from the card state
+    setTimeout(() => {
+      setPlayerCard(prev => prev ? prev.filter(s => !toRemove.includes(s.symbol)) : prev);
+      setCenterCard(prev => prev ? prev.filter(s => !toRemove.includes(s.symbol)) : prev);
+      setExplodingSymbols([]);
+    }, 600);
+  }, [hasLifelineUsed, isPaused, gameOver, isPlaying, playerCard, centerCard, explodingSymbols]);
 
   const handleSymbolClick = useCallback((symbol: string) => {
     if (gameOver || !isPlaying || isPaused || !playerCard || !centerCard) return;
@@ -1873,9 +1884,9 @@ function DobbleGame() {
 
         {/* Game Area */}
         <div className={`flex flex-col lg:flex-row items-center justify-center gap-0 lg:gap-12 w-full z-10 mt-2 lg:mt-8 ${isPaused ? 'blur-md pointer-events-none' : ''}`}>
-          {centerCard && <Card data={centerCard} onClick={handleSymbolClick} label="Target" feedback={feedback} isRetro={isRetro} />}
+          {centerCard && <Card data={centerCard} onClick={handleSymbolClick} label="Target" feedback={feedback} isRetro={isRetro} explodingSymbols={explodingSymbols} />}
           <div className="-mt-6 lg:mt-0">
-            {playerCard && <Card data={playerCard} onClick={handleSymbolClick} feedback={feedback} isRetro={isRetro} />}
+            {playerCard && <Card data={playerCard} onClick={handleSymbolClick} feedback={feedback} isRetro={isRetro} explodingSymbols={explodingSymbols} />}
           </div>
         </div>
 
