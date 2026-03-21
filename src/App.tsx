@@ -184,12 +184,17 @@ function shuffle(array: any[]) {
   return newArr;
 }
 
-function prepareCard(symbols: string[]) {
+function prepareCard(symbols: string[], difficulty: 'easy' | 'medium' | 'hard' = 'hard') {
   const slots = shuffle(getSlots());
   return symbols.map((symbol, idx) => {
     const slot = slots[idx];
-    // Remove jitter and random scale for uniform placement
-    const scale = 0.7 + Math.random() * 1.2;
+    let scale = 1.3; // Default 'easy': uniform and large
+    if (difficulty === 'hard') {
+      scale = 0.7 + Math.random() * 1.2;
+    } else if (difficulty === 'medium') {
+      scale = 0.85 + Math.random() * 0.5; // Slight variance
+    }
+    
     const rotation = Math.random() * 360;
     return {
       symbol,
@@ -533,6 +538,7 @@ function DobbleGame() {
   const [timeLeft, setTimeLeft] = useState(60);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPracticeMode, setIsPracticeMode] = useState(false);
+  const [practiceDifficulty, setPracticeDifficulty] = useState<'easy' | 'medium' | 'hard'>('hard');
   const [isPaused, setIsPaused] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
@@ -866,9 +872,10 @@ function DobbleGame() {
       return;
     }
 
+    const diff = isPractice ? practiceDifficulty : 'hard';
     const newDeck = shuffleDeck(generateDobbleDeck(symbols));
-    const pCard = prepareCard(newDeck.pop()!);
-    const cCard = prepareCard(newDeck.pop()!);
+    const pCard = prepareCard(newDeck.pop()!, diff);
+    const cCard = prepareCard(newDeck.pop()!, diff);
     setDeck(newDeck);
     setPlayerCard(pCard);
     setCenterCard(cCard);
@@ -880,7 +887,7 @@ function DobbleGame() {
     setIsPaused(false);
     setIsPracticeMode(isPractice);
     setIsPlaying(true);
-  }, [theme, customThemeEmojis]);
+  }, [theme, customThemeEmojis, practiceDifficulty]);
 
   const stopGame = useCallback(() => {
     setIsPlaying(false);
@@ -907,9 +914,10 @@ function DobbleGame() {
             saveScore(score + 1, correctClicks + 1, incorrectClicks);
           }
         } else {
+          const diff = isPracticeMode ? practiceDifficulty : 'hard';
           setPlayerCard(centerCard);
           const newDeck = [...deck];
-          const nextCard = prepareCard(newDeck.pop()!);
+          const nextCard = prepareCard(newDeck.pop()!, diff);
           setDeck(newDeck);
           setCenterCard(nextCard);
         }
@@ -920,7 +928,7 @@ function DobbleGame() {
       setIncorrectClicks(c => c + 1);
       setTimeout(() => setFeedback(null), 400);
     }
-  }, [deck, playerCard, centerCard, gameOver, isPlaying, score, profileName, isPracticeMode]);
+  }, [deck, playerCard, centerCard, gameOver, isPlaying, score, profileName, isPracticeMode, practiceDifficulty]);
 
   if (!isAuthReady) {
     return (
@@ -1647,21 +1655,38 @@ function DobbleGame() {
             </div>
 
             <div className="mt-6">
-              {isRetro ? (
-                <button
-                  onClick={() => startGame(undefined, true)}
-                  className="retro-btn w-full py-3 rounded-xl font-bold text-xs mb-4 flex items-center justify-center gap-2 opacity-80"
-                >
-                  PRACTICE MODE
-                </button>
-              ) : (
-                <button
-                  onClick={() => startGame(undefined, true)}
-                  className="w-full py-3 bg-white/20 text-white rounded-2xl font-bold text-md hover:bg-white/30 transition shadow-md flex items-center justify-center gap-2 mb-4 backdrop-blur-md border border-white/10"
-                >
-                  Practice Mode
-                </button>
-              )}
+              <div className="flex flex-col gap-2">
+                <div className="flex justify-center gap-1.5 mb-1">
+                  {(['easy', 'medium', 'hard'] as const).map(diff => (
+                    <button
+                      key={diff}
+                      onClick={() => setPracticeDifficulty(diff)}
+                      className={`px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${
+                        practiceDifficulty === diff
+                          ? (isRetro ? 'retro-btn border-[var(--retro-cyan)] text-[var(--retro-cyan)]' : 'bg-purple-600 text-white shadow-md')
+                          : (isRetro ? 'bg-[var(--retro-bg)] text-[var(--retro-text-dim)] border border-[var(--retro-border)] opacity-60 hover:opacity-100' : 'bg-white/10 text-white/60 hover:bg-white/20 border border-white/5')
+                      }`}
+                    >
+                      {diff}
+                    </button>
+                  ))}
+                </div>
+                {isRetro ? (
+                  <button
+                    onClick={() => startGame(undefined, true)}
+                    className="retro-btn w-full py-3 rounded-xl font-bold text-xs mb-4 flex items-center justify-center gap-2 opacity-80"
+                  >
+                    PRACTICE MODE
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => startGame(undefined, true)}
+                    className="w-full py-3 bg-white/20 text-white rounded-2xl font-bold text-md hover:bg-white/30 transition shadow-md flex items-center justify-center gap-2 mb-4 backdrop-blur-md border border-white/10"
+                  >
+                    Practice Mode
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
