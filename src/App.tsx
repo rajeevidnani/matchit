@@ -1844,35 +1844,21 @@ function DobbleGame() {
           </div>
           
           {/* Stats Bar */}
-          <div className="absolute top-[max(env(safe-area-inset-top),1rem)] left-1/2 -translate-x-1/2 lg:static lg:transform-none flex flex-row lg:flex-col items-center justify-center gap-2 lg:gap-4 z-20 pointer-events-auto flex-shrink-0 w-[90vw] lg:w-auto mt-2 lg:mt-0">
-            <div className={`rounded-xl p-2 flex items-center gap-2 shadow-2xl ${isRetro ? 'retro-panel' : 'bg-black/30 backdrop-blur-xl border border-white/10'}`}>
-              <div className={`p-2 rounded-lg ${isRetro ? 'bg-[var(--retro-gold)]' : 'bg-yellow-400 shadow-lg shadow-yellow-400/20'}`}>
+          <div className="absolute top-[max(env(safe-area-inset-top),0.5rem)] left-1/2 -translate-x-1/2 lg:static lg:transform-none flex flex-row lg:flex-col items-center justify-center gap-2 lg:gap-4 z-20 pointer-events-auto flex-shrink-0 w-[95vw] lg:w-auto lg:mt-0">
+            <div className={`rounded-xl p-1.5 flex items-center gap-2 shadow-2xl flex-1 lg:flex-none justify-start lg:justify-center w-full lg:w-32 ${isRetro ? 'retro-panel' : 'bg-black/30 backdrop-blur-xl border border-white/10'}`}>
+              <div className={`p-1.5 rounded-lg ${isRetro ? 'bg-[var(--retro-gold)]' : 'bg-yellow-400 shadow-lg shadow-yellow-400/20'}`}>
                 <Trophy className="w-4 h-4 text-yellow-900" />
               </div>
-              <div>
+              <div className="text-left">
                 <div className="text-white/50 text-[10px] font-black uppercase tracking-[0.2em] mb-0 leading-none">Score</div>
                 <div className="text-white font-black leading-tight text-xl">
                   <AnimatedCounter value={score} fontSize={20} />
                 </div>
               </div>
-              {(correctClicks + incorrectClicks) > 0 && (
-                <div className={`ml-2 pl-3 border-l ${isRetro ? 'border-[var(--retro-border)]' : 'border-white/20'}`}>
-                  <div className={`text-[10px] font-black uppercase tracking-[0.2em] mb-0 leading-none ${isRetro ? 'text-[var(--retro-text-dim)]' : 'text-white/50'}`}>Accuracy</div>
-                  <div className={`font-black text-xl leading-tight ${
-                    Math.round((correctClicks / (correctClicks + incorrectClicks)) * 100) >= 80
-                      ? (isRetro ? 'text-[var(--retro-green)]' : 'text-green-400')
-                      : Math.round((correctClicks / (correctClicks + incorrectClicks)) * 100) >= 50
-                        ? (isRetro ? 'text-[var(--retro-gold)]' : 'text-yellow-400')
-                        : (isRetro ? 'text-[var(--retro-red)]' : 'text-red-400')
-                  }`}>
-                    {Math.round((correctClicks / (correctClicks + incorrectClicks)) * 100)}%
-                  </div>
-                </div>
-              )}
             </div>
 
-            <div className={`rounded-xl p-2 flex items-center gap-2 shadow-2xl ${isRetro ? 'retro-panel' : 'bg-black/30 backdrop-blur-xl border border-white/10 w-full justify-start lg:justify-center'}`}>
-              <div className={`p-2 rounded-lg ${isRetro ? (!isPracticeMode && timeLeft <= 10 ? 'bg-[var(--retro-red)]/20 text-[var(--retro-red)]' : 'bg-[var(--retro-cyan)]/20 text-[var(--retro-cyan)]') : (!isPracticeMode && timeLeft <= 10 ? 'bg-red-400/20 text-red-400 shadow-lg shadow-red-400/10' : 'bg-blue-400/20 text-blue-400 shadow-lg shadow-blue-400/10')}`}>
+            <div className={`rounded-xl p-1.5 flex items-center gap-2 shadow-2xl flex-1 lg:flex-none justify-start lg:justify-center w-full lg:w-32 ${isRetro ? 'retro-panel' : 'bg-black/30 backdrop-blur-xl border border-white/10'}`}>
+              <div className={`p-1.5 rounded-lg ${isRetro ? (!isPracticeMode && timeLeft <= 10 ? 'bg-[var(--retro-red)]/20 text-[var(--retro-red)]' : 'bg-[var(--retro-cyan)]/20 text-[var(--retro-cyan)]') : (!isPracticeMode && timeLeft <= 10 ? 'bg-red-400/20 text-red-400 shadow-lg shadow-red-400/10' : 'bg-blue-400/20 text-blue-400 shadow-lg shadow-blue-400/10')}`}>
                 <Clock className="w-4 h-4" />
               </div>
               <div className="text-left">
