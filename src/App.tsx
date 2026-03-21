@@ -241,7 +241,7 @@ const Card = ({ data, onClick, label, feedback, isRetro = false, explodingSymbol
         }}
         transition={isRetro ? { duration: 0.15, ease: [0, 0, 1, 1] } : { duration: 0.2 }}
         key={data.map(d => d.symbol).join('')}
-        className={`relative w-[46vh] h-[46vh] md:w-[38vh] md:h-[38vh] lg:w-[550px] lg:h-[550px] max-w-[85vw] md:max-w-[90vw] rounded-full border-[8px] sm:border-[12px] overflow-hidden transition-all ${isRetro ? 'bg-[var(--retro-bg-card)] retro-card-frame' : 'bg-[#fdfdfd] card-shadow'}`}
+        className={`relative w-[43vh] h-[43vh] md:w-[38vh] md:h-[38vh] lg:w-[550px] lg:h-[550px] max-w-[85vw] md:max-w-[90vw] rounded-full border-[8px] sm:border-[12px] overflow-hidden transition-all ${isRetro ? 'bg-[var(--retro-bg-card)] retro-card-frame' : 'bg-[#fdfdfd] card-shadow'}`}
       >
         <AnimatePresence>
           {data.map((item) => {
@@ -1838,7 +1838,7 @@ function DobbleGame() {
         </div>
 
         {/* Game Area */}
-        <div className={`flex flex-col lg:flex-row items-center justify-center gap-0 lg:gap-8 w-full z-10 flex-1 mt-12 lg:mt-0 ${isPaused ? 'blur-md pointer-events-none' : ''}`}>
+        <div className={`flex flex-col lg:flex-row items-center justify-center gap-0 lg:gap-8 w-full z-10 flex-1 mt-6 lg:mt-0 ${isPaused ? 'blur-md pointer-events-none' : ''}`}>
           <div className="flex-1 flex justify-end z-10">
             {centerCard && <Card data={centerCard} onClick={handleSymbolClick} label="Target" feedback={feedback} isRetro={isRetro} explodingSymbols={explodingSymbols} />}
           </div>
