@@ -1871,15 +1871,15 @@ function DobbleGame() {
               )}
             </div>
 
-            <div className={`rounded-xl p-2 flex items-center gap-3 shadow-2xl ${isRetro ? 'retro-panel' : 'bg-black/30 backdrop-blur-xl border border-white/10 w-full justify-between lg:justify-center'}`}>
-              <div className="text-right lg:text-center">
+            <div className={`rounded-xl p-2 flex items-center gap-2 shadow-2xl ${isRetro ? 'retro-panel' : 'bg-black/30 backdrop-blur-xl border border-white/10 w-full justify-start lg:justify-center'}`}>
+              <div className={`p-2 rounded-lg ${isRetro ? (!isPracticeMode && timeLeft <= 10 ? 'bg-[var(--retro-red)]/20 text-[var(--retro-red)]' : 'bg-[var(--retro-cyan)]/20 text-[var(--retro-cyan)]') : (!isPracticeMode && timeLeft <= 10 ? 'bg-red-400/20 text-red-400 shadow-lg shadow-red-400/10' : 'bg-blue-400/20 text-blue-400 shadow-lg shadow-blue-400/10')}`}>
+                <Clock className="w-4 h-4" />
+              </div>
+              <div className="text-left">
                 <div className={`text-[10px] font-black uppercase tracking-[0.2em] mb-0 leading-none ${isRetro ? 'text-[var(--retro-text-dim)]' : 'text-white/50'}`}>Time</div>
                 <div className={`font-black text-xl leading-tight ${!isPracticeMode && timeLeft <= 10 ? (isRetro ? 'text-[var(--retro-red)]' : 'text-red-400 animate-pulse') : (isRetro ? 'text-[var(--retro-text)]' : 'text-white')}`}>
                   {isPracticeMode ? '∞' : `${timeLeft}s`}
                 </div>
-              </div>
-              <div className={`p-2 rounded-lg ${isRetro ? (!isPracticeMode && timeLeft <= 10 ? 'bg-[var(--retro-red)]/20 text-[var(--retro-red)]' : 'bg-[var(--retro-cyan)]/20 text-[var(--retro-cyan)]') : (!isPracticeMode && timeLeft <= 10 ? 'bg-red-400/20 text-red-400 shadow-lg shadow-red-400/10' : 'bg-blue-400/20 text-blue-400 shadow-lg shadow-blue-400/10')}`}>
-                <Clock className="w-4 h-4" />
               </div>
             </div>
           </div>
