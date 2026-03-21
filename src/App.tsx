@@ -1884,7 +1884,7 @@ function DobbleGame() {
             </div>
           </div>
 
-          <div className="flex-1 flex justify-start -mt-[15vh] lg:mt-0 z-0">
+          <div className="flex-1 flex justify-start -mt-4 lg:mt-0 z-0">
             {playerCard && <Card data={playerCard} onClick={handleSymbolClick} feedback={feedback} isRetro={isRetro} explodingSymbols={explodingSymbols} />}
           </div>
         </div>
