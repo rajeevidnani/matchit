@@ -935,18 +935,13 @@ function DobbleGame() {
     const match = playerCard.find(p => centerCard.some(c => c.symbol === p.symbol))?.symbol;
     if (!match) return;
 
-    const nonMatching = playerCard.filter(s => s.symbol !== match);
-    const shuffledNonMatching = [...nonMatching].sort(() => 0.5 - Math.random());
-    const toRemove = shuffledNonMatching.slice(0, 2).map(s => s.symbol);
+    const pNonMatching = playerCard.filter(s => s.symbol !== match);
+    const cNonMatching = centerCard.filter(s => s.symbol !== match);
     
-    setExplodingSymbols(toRemove);
+    const pToRemove = [...pNonMatching].sort(() => 0.5 - Math.random()).slice(0, 2).map(s => s.symbol);
+    const cToRemove = [...cNonMatching].sort(() => 0.5 - Math.random()).slice(0, 2).map(s => s.symbol);
 
-    // Wait for explosion animation to finish before actually removing them from the card state
-    setTimeout(() => {
-      setPlayerCard(prev => prev ? prev.filter(s => !toRemove.includes(s.symbol)) : prev);
-      setCenterCard(prev => prev ? prev.filter(s => !toRemove.includes(s.symbol)) : prev);
-      setExplodingSymbols([]);
-    }, 600);
+    setExplodingSymbols([...pToRemove, ...cToRemove]);
   }, [hasLifelineUsed, isPaused, gameOver, isPlaying, playerCard, centerCard, explodingSymbols]);
 
   const handleSymbolClick = useCallback((symbol: string) => {
@@ -976,6 +971,7 @@ function DobbleGame() {
           setCenterCard(nextCard);
         }
         setFeedback(null);
+        setExplodingSymbols([]);
       }, 200);
     } else {
       setFeedback('incorrect');
