@@ -4,7 +4,7 @@ import { motion, AnimatePresence, MotionValue, useSpring, useTransform } from 'f
 import { ShimmerButton } from './components/ShimmerButton';
 import { MagnetizeButton } from './components/MagnetizeButton';
 import { ParticleButton } from './components/ParticleButton';
-import { Play, Pause, RotateCcw, Trophy, Clock, User as UserIcon, Plus, ChevronRight, X, Pencil, Trash2, LogOut, Dices, Palette, User, RefreshCw } from 'lucide-react';
+import { Play, Pause, RotateCcw, Trophy, Clock, User as UserIcon, Plus, ChevronRight, X, Pencil, Trash2, LogOut, Dices, Palette, User, RefreshCw, Wand2 } from 'lucide-react';
 import { LimelightNav } from './components/LimelightNav';
 import { PixelEmoji } from './components/PixelEmoji';
 import EmojiPicker, { Theme as EmojiTheme } from 'emoji-picker-react';
@@ -558,6 +558,7 @@ function DobbleGame() {
   const [practiceDifficulty, setPracticeDifficulty] = useState<'easy' | 'medium' | 'hard'>('hard');
   const [practiceTheme, setPracticeTheme] = useState<Theme>('kindergarten');
   const [isPaused, setIsPaused] = useState(false);
+  const [hasLifelineUsed, setHasLifelineUsed] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
   const [correctClicks, setCorrectClicks] = useState(0);
@@ -905,6 +906,7 @@ function DobbleGame() {
     setTimeLeft(60);
     setGameOver(false);
     setIsPaused(false);
+    setHasLifelineUsed(false);
     setIsPracticeMode(isPractice);
     setIsPlaying(true);
   }, [theme, customThemeEmojis, practiceDifficulty]);
@@ -914,6 +916,27 @@ function DobbleGame() {
     setGameOver(false);
     setIsPaused(false);
   }, []);
+
+  const useLifeline = useCallback(() => {
+    if (hasLifelineUsed || isPaused || gameOver || !isPlaying || !playerCard || !centerCard) return;
+
+    setHasLifelineUsed(true);
+
+    // Find the single matching symbol between the two cards
+    const match = playerCard.find(p => centerCard.some(c => c.symbol === p.symbol))?.symbol;
+    if (!match) return;
+
+    // Helper to remove 2 random non-matching symbols from a card
+    const removeTwoNonMatching = (card: any[]) => {
+      const nonMatching = card.filter(s => s.symbol !== match);
+      const shuffledNonMatching = [...nonMatching].sort(() => 0.5 - Math.random());
+      const toRemove = new Set(shuffledNonMatching.slice(0, 2).map(s => s.symbol));
+      return card.filter(s => !toRemove.has(s.symbol));
+    };
+
+    setPlayerCard(removeTwoNonMatching(playerCard));
+    setCenterCard(removeTwoNonMatching(centerCard));
+  }, [hasLifelineUsed, isPaused, gameOver, isPlaying, playerCard, centerCard]);
 
   const handleSymbolClick = useCallback((symbol: string) => {
     if (gameOver || !isPlaying || isPaused || !playerCard || !centerCard) return;
@@ -1837,6 +1860,15 @@ function DobbleGame() {
           >
             <X className="w-4 h-4" />
           </button>
+          {isPlaying && !hasLifelineUsed && (
+            <button
+              onClick={useLifeline}
+              className={`rounded-xl p-2.5 mt-2 ${isRetro ? 'retro-btn border-[var(--retro-gold)] text-[var(--retro-gold)]' : 'bg-yellow-400/20 backdrop-blur-xl text-yellow-400 hover:bg-yellow-400/40 transition-all border border-yellow-400/30 shadow-[0_0_15px_rgba(250,204,21,0.4)] active:scale-90'}`}
+              title="Use Lifeline (Removes 2 incorrect symbols)"
+            >
+              <Wand2 className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
         {/* Game Area */}
