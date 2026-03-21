@@ -1803,49 +1803,6 @@ function DobbleGame() {
       {/* Main Game Container */}
       <div className="relative w-full h-full max-w-lg md:max-w-4xl lg:max-w-6xl flex flex-col items-center justify-start py-4">
         
-        {/* Header Stats */}
-        <div className="absolute top-0 left-0 w-full p-3 flex justify-between items-start z-20 pointer-events-none">
-          <div className="flex items-center gap-2 pointer-events-auto">
-            <div className={`rounded-xl p-1.5 flex items-center gap-2 shadow-2xl ${isRetro ? 'retro-panel' : 'bg-black/30 backdrop-blur-xl border border-white/10'}`}>
-              <div className={`p-1.5 rounded-lg ${isRetro ? 'bg-[var(--retro-gold)]' : 'bg-yellow-400 shadow-lg shadow-yellow-400/20'}`}>
-                <Trophy className="w-3.5 h-3.5 text-yellow-900" />
-              </div>
-              <div>
-                <div className="text-white/50 text-[8px] font-black uppercase tracking-[0.2em] mb-0">Score</div>
-                <div className="text-white font-black leading-none">
-                  <AnimatedCounter value={score} fontSize={14} />
-                </div>
-              </div>
-              {(correctClicks + incorrectClicks) > 0 && (
-                <div className={`ml-1 pl-2 border-l ${isRetro ? 'border-[var(--retro-border)]' : 'border-white/20'}`}>
-                  <div className={`text-[8px] font-black uppercase tracking-[0.2em] mb-0 ${isRetro ? 'text-[var(--retro-text-dim)]' : 'text-white/50'}`}>Accuracy</div>
-                  <div className={`font-black text-sm leading-none ${
-                    Math.round((correctClicks / (correctClicks + incorrectClicks)) * 100) >= 80
-                      ? (isRetro ? 'text-[var(--retro-green)]' : 'text-green-400')
-                      : Math.round((correctClicks / (correctClicks + incorrectClicks)) * 100) >= 50
-                        ? (isRetro ? 'text-[var(--retro-gold)]' : 'text-yellow-400')
-                        : (isRetro ? 'text-[var(--retro-red)]' : 'text-red-400')
-                  }`}>
-                    {Math.round((correctClicks / (correctClicks + incorrectClicks)) * 100)}%
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className={`rounded-xl p-1.5 flex items-center gap-2 shadow-2xl pointer-events-auto ${isRetro ? 'retro-panel' : 'bg-black/30 backdrop-blur-xl border border-white/10'}`}>
-            <div className="text-right">
-              <div className={`text-[8px] font-black uppercase tracking-[0.2em] mb-0 ${isRetro ? 'text-[var(--retro-text-dim)]' : 'text-white/50'}`}>Time</div>
-              <div className={`font-black text-sm leading-none ${!isPracticeMode && timeLeft <= 10 ? (isRetro ? 'text-[var(--retro-red)]' : 'text-red-400 animate-pulse') : (isRetro ? 'text-[var(--retro-text)]' : 'text-white')}`}>
-                {isPracticeMode ? '∞' : `${timeLeft}s`}
-              </div>
-            </div>
-            <div className={`p-1.5 rounded-lg ${isRetro ? (!isPracticeMode && timeLeft <= 10 ? 'bg-[var(--retro-red)]/20 text-[var(--retro-red)]' : 'bg-[var(--retro-cyan)]/20 text-[var(--retro-cyan)]') : (!isPracticeMode && timeLeft <= 10 ? 'bg-red-400/20 text-red-400 shadow-lg shadow-red-400/10' : 'bg-blue-400/20 text-blue-400 shadow-lg shadow-blue-400/10')}`}>
-              <Clock className="w-3.5 h-3.5" />
-            </div>
-          </div>
-        </div>
-
         {/* Vertical Control Bar */}
         <div className="absolute left-3 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-30">
           <button
@@ -1881,9 +1838,51 @@ function DobbleGame() {
         </div>
 
         {/* Game Area */}
-        <div className={`flex flex-col lg:flex-row items-center justify-center gap-0 lg:gap-12 w-full z-10 mt-14 lg:mt-8 flex-1 ${isPaused ? 'blur-md pointer-events-none' : ''}`}>
+        <div className={`flex flex-col lg:flex-row items-center justify-center gap-2 lg:gap-8 w-full z-10 flex-1 ${isPaused ? 'blur-md pointer-events-none' : ''}`}>
           {centerCard && <Card data={centerCard} onClick={handleSymbolClick} label="Target" feedback={feedback} isRetro={isRetro} explodingSymbols={explodingSymbols} />}
-          <div className="-mt-8 lg:mt-0">
+          
+          {/* Middle Stats Bar */}
+          <div className="flex lg:flex-col items-center justify-center gap-4 z-20 pointer-events-auto my-2 lg:my-0">
+            <div className={`rounded-xl p-1.5 flex items-center gap-2 shadow-2xl ${isRetro ? 'retro-panel' : 'bg-black/30 backdrop-blur-xl border border-white/10'}`}>
+              <div className={`p-1.5 rounded-lg ${isRetro ? 'bg-[var(--retro-gold)]' : 'bg-yellow-400 shadow-lg shadow-yellow-400/20'}`}>
+                <Trophy className="w-3.5 h-3.5 text-yellow-900" />
+              </div>
+              <div>
+                <div className="text-white/50 text-[8px] font-black uppercase tracking-[0.2em] mb-0">Score</div>
+                <div className="text-white font-black leading-none">
+                  <AnimatedCounter value={score} fontSize={14} />
+                </div>
+              </div>
+              {(correctClicks + incorrectClicks) > 0 && (
+                <div className={`ml-1 pl-2 border-l ${isRetro ? 'border-[var(--retro-border)]' : 'border-white/20'}`}>
+                  <div className={`text-[8px] font-black uppercase tracking-[0.2em] mb-0 ${isRetro ? 'text-[var(--retro-text-dim)]' : 'text-white/50'}`}>Accuracy</div>
+                  <div className={`font-black text-sm leading-none ${
+                    Math.round((correctClicks / (correctClicks + incorrectClicks)) * 100) >= 80
+                      ? (isRetro ? 'text-[var(--retro-green)]' : 'text-green-400')
+                      : Math.round((correctClicks / (correctClicks + incorrectClicks)) * 100) >= 50
+                        ? (isRetro ? 'text-[var(--retro-gold)]' : 'text-yellow-400')
+                        : (isRetro ? 'text-[var(--retro-red)]' : 'text-red-400')
+                  }`}>
+                    {Math.round((correctClicks / (correctClicks + incorrectClicks)) * 100)}%
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className={`rounded-xl p-1.5 flex items-center gap-2 shadow-2xl ${isRetro ? 'retro-panel' : 'bg-black/30 backdrop-blur-xl border border-white/10'}`}>
+              <div className="text-right">
+                <div className={`text-[8px] font-black uppercase tracking-[0.2em] mb-0 ${isRetro ? 'text-[var(--retro-text-dim)]' : 'text-white/50'}`}>Time</div>
+                <div className={`font-black text-sm leading-none ${!isPracticeMode && timeLeft <= 10 ? (isRetro ? 'text-[var(--retro-red)]' : 'text-red-400 animate-pulse') : (isRetro ? 'text-[var(--retro-text)]' : 'text-white')}`}>
+                  {isPracticeMode ? '∞' : `${timeLeft}s`}
+                </div>
+              </div>
+              <div className={`p-1.5 rounded-lg ${isRetro ? (!isPracticeMode && timeLeft <= 10 ? 'bg-[var(--retro-red)]/20 text-[var(--retro-red)]' : 'bg-[var(--retro-cyan)]/20 text-[var(--retro-cyan)]') : (!isPracticeMode && timeLeft <= 10 ? 'bg-red-400/20 text-red-400 shadow-lg shadow-red-400/10' : 'bg-blue-400/20 text-blue-400 shadow-lg shadow-blue-400/10')}`}>
+                <Clock className="w-3.5 h-3.5" />
+              </div>
+            </div>
+          </div>
+
+          <div className="lg:mt-0">
             {playerCard && <Card data={playerCard} onClick={handleSymbolClick} feedback={feedback} isRetro={isRetro} explodingSymbols={explodingSymbols} />}
           </div>
         </div>
