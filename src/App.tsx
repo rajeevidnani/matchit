@@ -4,7 +4,7 @@ import { motion, AnimatePresence, MotionValue, useSpring, useTransform } from 'f
 import { ShimmerButton } from './components/ShimmerButton';
 import { MagnetizeButton } from './components/MagnetizeButton';
 import { ParticleButton } from './components/ParticleButton';
-import { Play, Pause, RotateCcw, Trophy, Clock, User as UserIcon, Plus, ChevronRight, X, Pencil, Trash2, LogOut, Dices, Palette, User, RefreshCw, Wand2 } from 'lucide-react';
+import { Play, Pause, RotateCcw, Trophy, Clock, User as UserIcon, Plus, ChevronRight, X, Pencil, Trash2, LogOut, Dices, Palette, User, RefreshCw, Wand2, Home } from 'lucide-react';
 import { LimelightNav } from './components/LimelightNav';
 import { PixelEmoji } from './components/PixelEmoji';
 import EmojiPicker, { Theme as EmojiTheme } from 'emoji-picker-react';
@@ -109,16 +109,7 @@ const VEHICLE_EMOJIS = [
   "🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🛻","🚚","🚛","🚜","🦯","🦽","🦼","🛴","🚲","🛵","🏍️","🛺","🚨","🚔","🚍","🚘","🚖","🚡","🚠","🚟","🚃","🚋","🚞","🚝","🚄","🚅","🚈","🚂","🚆","🚇","🚊","🚉","✈️","🛫","🛬","🛩️","💺","🛰️","🚀","🛸","🚁","🛶","⛵","🚤","🛥️","🛳️","⛴️"
 ];
 
-const KINDERGARTEN_MIX = [
-  "A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
-  "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
-  "U", "V", "W", "X", "Y", "Z",
-  "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-  "❤️", "⭐", "🌙", "☀️", "☁️", "🔴", "🔵", "🟡", "🟩", "🔺",
-  "🔶", "💜", "🤍", "🖤", "🤎", "💖", "🔲", "🔳", "🎈", "🧸", "🎨"
-];
-
-const FIRST_WORDS = [
+const KIDS_EMOJIS = [
   "0️⃣", "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣",
   "⭐", "❤️", "🔴", "🟦",
   "🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼", "🐸", "🐷", "🐵", "🐔",
@@ -177,7 +168,7 @@ const FUNNY_MESSAGES = [
   "The ultimate collection"
 ];
 
-type Theme = 'standard' | 'nature' | 'fruits' | 'landmarks' | 'custom' | 'kindergarten' | 'first_words';
+type Theme = 'standard' | 'nature' | 'fruits' | 'landmarks' | 'custom' | 'kids';
 
 const getSlots = () => {
   const slots = [{ x: 50, y: 50 }];
@@ -508,7 +499,7 @@ const ProfileSelector = ({
                       )}
                     </button>
                     
-                    <div className="absolute top-0.5 right-0.5 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20 shadow-lg scale-75 origin-top-right">
+                    <div className="absolute top-0.5 right-0.5 flex gap-1 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity z-20 shadow-lg scale-75 origin-top-right">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -566,8 +557,7 @@ function DobbleGame() {
   const [timeLeft, setTimeLeft] = useState(60);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPracticeMode, setIsPracticeMode] = useState(false);
-  const [practiceDifficulty, setPracticeDifficulty] = useState<'easy' | 'medium' | 'hard'>('hard');
-  const [practiceTheme, setPracticeTheme] = useState<Theme>('kindergarten');
+  const [practiceDifficulty, setPracticeDifficulty] = useState<'easy' | 'medium' | 'hard'>('easy');
   const [isPaused, setIsPaused] = useState(false);
   const [hasLifelineUsed, setHasLifelineUsed] = useState(false);
   const [explodingSymbols, setExplodingSymbols] = useState<string[]>([]);
@@ -620,7 +610,7 @@ function DobbleGame() {
   const ThemeToggle = () => (
     <button
       onClick={() => setVisualTheme(v => v === 'modern' ? 'retro' : 'modern')}
-      className={`fixed top-4 right-4 z-[200] flex items-center gap-2 px-3 py-2 rounded-xl transition-all ${
+      className={`fixed bottom-4 right-4 z-[200] flex items-center gap-2 px-3 py-2 rounded-xl transition-all ${
         isRetro
           ? 'retro-btn text-[8px] tracking-wider'
           : 'bg-white/15 backdrop-blur-lg border border-white/25 text-white hover:bg-white/25 shadow-lg hover:shadow-xl hover:-translate-y-0.5'
@@ -896,8 +886,7 @@ function DobbleGame() {
     else if (activeTheme === 'nature') symbols = NATURE_EMOJIS;
     else if (activeTheme === 'fruits') symbols = FRUIT_EMOJIS;
     else if (activeTheme === 'landmarks') symbols = LANDMARK_IMAGES;
-    else if (activeTheme === 'kindergarten') symbols = KINDERGARTEN_MIX;
-    else if (activeTheme === 'first_words') symbols = FIRST_WORDS;
+    else if (activeTheme === 'kids') symbols = KIDS_EMOJIS;
     else if (activeTheme === 'custom') symbols = customThemeEmojis;
 
     if (symbols.length < 57) {
@@ -1292,7 +1281,7 @@ function DobbleGame() {
                               setCustomThemeIcon(newEmojis[0] || '✨');
                             }
                           }}
-                          className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110"
+                          className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity hover:scale-110"
                         >
                           <X className="w-3 h-3" />
                         </div>
@@ -1569,7 +1558,7 @@ function DobbleGame() {
             <div className="grid grid-cols-2 gap-3 mb-2">
               {([
                 { key: 'standard' as Theme, icon: '🦁', label: 'Standard' },
-                { key: 'nature' as Theme, icon: '🌸', label: 'Nature' },
+                { key: 'kids' as Theme, icon: '🧸', label: 'Kids' },
                 { key: 'fruits' as Theme, icon: '🍓', label: 'Fruits' },
                 // { key: 'landmarks' as Theme, icon: '🏔️', label: 'Landmarks' }, // TODO: improve image quality before enabling
               ] as const).map(({ key, icon, label }) => {
@@ -1708,25 +1697,22 @@ function DobbleGame() {
 
             <div className="mt-6">
               <div className="flex flex-col gap-2">
-                <div className="flex justify-center gap-1.5 mb-1">
-                  {([
-                    { id: 'kindergarten', label: '🔤 Kindergarten Mix' },
-                    { id: 'first_words', label: '🧸 First Words' }
-                  ] as const).map(pt => (
-                    <button
-                      key={pt.id}
-                      onClick={() => setPracticeTheme(pt.id as Theme)}
-                      className={`px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all flex-1 ${
-                        practiceTheme === pt.id
-                          ? (isRetro ? 'retro-btn border-[var(--retro-magenta)] text-[var(--retro-magenta)]' : 'bg-pink-500 text-white shadow-md')
-                          : (isRetro ? 'bg-[var(--retro-bg)] text-[var(--retro-text-dim)] border border-[var(--retro-border)] opacity-60 hover:opacity-100' : 'bg-white/10 text-white/60 hover:bg-white/20 border border-white/5')
-                      }`}
-                    >
-                      {pt.label}
-                    </button>
-                  ))}
-                </div>
-                <div className="flex justify-center gap-1.5 mb-1">
+                {isRetro ? (
+                  <button
+                    onClick={() => startGame(undefined, true)}
+                    className="retro-btn w-full py-3 rounded-xl font-bold text-xs mb-2 flex items-center justify-center gap-2 opacity-80"
+                  >
+                    PRACTICE MODE
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => startGame(undefined, true)}
+                    className="w-full py-3 bg-white/20 text-white rounded-2xl font-bold text-md hover:bg-white/30 transition shadow-md flex items-center justify-center gap-2 mb-2 backdrop-blur-md border border-white/10"
+                  >
+                    Practice Mode
+                  </button>
+                )}
+                <div className="flex justify-center gap-1.5 mb-4">
                   {(['easy', 'medium', 'hard'] as const).map(diff => (
                     <button
                       key={diff}
@@ -1741,21 +1727,6 @@ function DobbleGame() {
                     </button>
                   ))}
                 </div>
-                {isRetro ? (
-                  <button
-                    onClick={() => startGame(practiceTheme, true)}
-                    className="retro-btn w-full py-3 rounded-xl font-bold text-xs mb-4 flex items-center justify-center gap-2 opacity-80"
-                  >
-                    PRACTICE MODE
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => startGame(practiceTheme, true)}
-                    className="w-full py-3 bg-white/20 text-white rounded-2xl font-bold text-md hover:bg-white/30 transition shadow-md flex items-center justify-center gap-2 mb-4 backdrop-blur-md border border-white/10"
-                  >
-                    Practice Mode
-                  </button>
-                )}
               </div>
             </div>
           </div>
@@ -1839,7 +1810,7 @@ function DobbleGame() {
 
         {/* Game Area */}
         <div className={`flex flex-col md:flex-row items-center justify-center gap-0 md:gap-4 lg:gap-8 w-full z-10 flex-1 mt-6 md:mt-0 ${isPaused ? 'blur-md pointer-events-none' : ''}`}>
-          <div className="flex-1 flex justify-end md:justify-center md:items-center z-10">
+          <div className="flex-1 flex justify-end md:justify-center md:items-center z-0">
             {centerCard && <Card data={centerCard} onClick={handleSymbolClick} label="Target" feedback={feedback} isRetro={isRetro} explodingSymbols={explodingSymbols} />}
           </div>
           
@@ -1870,7 +1841,7 @@ function DobbleGame() {
             </div>
           </div>
 
-          <div className="flex-1 flex justify-start md:justify-center md:items-center -mt-4 md:mt-0 z-0">
+          <div className="flex-1 flex justify-start md:justify-center md:items-center -mt-4 md:mt-0 z-10">
             {playerCard && <Card data={playerCard} onClick={handleSymbolClick} feedback={feedback} isRetro={isRetro} explodingSymbols={explodingSymbols} />}
           </div>
         </div>
@@ -1944,6 +1915,18 @@ function DobbleGame() {
                   </motion.div>
                 </div>
 
+                {/* Stats Row */}
+                <div className="flex justify-center gap-6 mb-4">
+                  <div className="text-center">
+                    <div className={`text-xs uppercase tracking-widest font-bold mb-0.5 ${isRetro ? 'text-[var(--retro-text-dim)] text-[8px]' : 'text-gray-400'}`}>Incorrect</div>
+                    <div className={`text-2xl font-black ${isRetro ? 'text-[var(--retro-red)]' : 'text-red-500'}`}>{incorrectClicks}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className={`text-xs uppercase tracking-widest font-bold mb-0.5 ${isRetro ? 'text-[var(--retro-text-dim)] text-[8px]' : 'text-gray-400'}`}>Accuracy</div>
+                    <div className={`text-2xl font-black ${isRetro ? 'text-[var(--retro-green)]' : 'text-green-500'}`}>{correctClicks + incorrectClicks > 0 ? Math.round((correctClicks / (correctClicks + incorrectClicks)) * 100) : 100}%</div>
+                  </div>
+                </div>
+
                 <div className="mb-8 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
                   <div className="flex gap-2 mb-3">
                     {(['my', 'global'] as const).map((t) => (
@@ -2012,13 +1995,29 @@ function DobbleGame() {
                   )}
                 </div>
 
-                <button
-                  onClick={() => startGame(undefined, isPracticeMode)}
-                  className={`w-full py-4 rounded-xl font-bold flex items-center justify-center gap-2 ${isRetro ? 'retro-btn text-sm' : 'bg-purple-600 text-white text-xl hover:bg-purple-700 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1'}`}
-                >
-                  <RotateCcw className="w-6 h-6" />
-                  Play Again
-                </button>
+                <div className="flex flex-col gap-2">
+                  <button
+                    onClick={() => startGame(undefined, isPracticeMode)}
+                    className={`w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 ${isRetro ? 'retro-btn text-sm' : 'bg-purple-600 text-white text-lg hover:bg-purple-700 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'}`}
+                  >
+                    <RotateCcw className="w-5 h-5" />
+                    Play Again
+                  </button>
+                  <button
+                    onClick={stopGame}
+                    className={`w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 ${isRetro ? 'retro-btn text-sm text-[var(--retro-cyan)]' : 'bg-gray-100 text-gray-700 text-lg hover:bg-gray-200 transition'}`}
+                  >
+                    <Palette className="w-5 h-5" />
+                    Change Theme
+                  </button>
+                  <button
+                    onClick={stopGame}
+                    className={`w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 ${isRetro ? 'retro-btn text-sm text-[var(--retro-text-dim)]' : 'bg-gray-50 text-gray-500 text-lg hover:bg-gray-100 transition'}`}
+                  >
+                    <Home className="w-5 h-5" />
+                    Home
+                  </button>
+                </div>
               </motion.div>
             </motion.div>
           )}
