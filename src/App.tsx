@@ -598,11 +598,12 @@ function DobbleGame() {
   const [profileToDelete, setProfileToDelete] = useState<string | null>(null);
   const [themeToDelete, setThemeToDelete] = useState<any | null>(null);
   const [builderTab, setBuilderTab] = useState<'library' | 'selection'>('selection');
-  const [visualTheme, setVisualTheme] = useState<'modern' | 'retro'>(() =>
-    (typeof window !== 'undefined' && localStorage.getItem('matchit_visual_theme') as 'modern' | 'retro') || 'modern'
+  const [visualTheme, setVisualTheme] = useState<'modern' | 'retro' | 'dark'>(() =>
+    (typeof window !== 'undefined' && localStorage.getItem('matchit_visual_theme') as 'modern' | 'retro' | 'dark') || 'modern'
   );
 
   const isRetro = visualTheme === 'retro';
+  const isDark = visualTheme === 'dark';
 
   useEffect(() => {
     localStorage.setItem('matchit_visual_theme', visualTheme);
@@ -610,23 +611,25 @@ function DobbleGame() {
 
   // Theme-aware class helper: returns retro class when retro mode is active, modern otherwise
   const r = (modern: string, retro: string) => isRetro ? retro : modern;
-  const bg = isRetro ? 'retro-bg bg-[#1a1a2e]' : 'bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-600';
-  const panel = isRetro ? 'retro-panel' : 'bg-white/10 backdrop-blur-lg border border-white/20';
+  const bg = isRetro ? 'retro-bg bg-[#1a1a2e]' : isDark ? 'bg-gray-950' : 'bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-600';
+  const panel = isRetro ? 'retro-panel' : isDark ? 'bg-gray-900/60 backdrop-blur-xl border border-gray-800' : 'bg-white/10 backdrop-blur-lg border border-white/20';
   const btn = isRetro ? 'retro-btn rounded-lg' : '';
 
   const ThemeToggle = ({ className = '' }: { className?: string }) => (
     <button
-      onClick={() => setVisualTheme(v => v === 'modern' ? 'retro' : 'modern')}
+      onClick={() => setVisualTheme(v => v === 'modern' ? 'dark' : v === 'dark' ? 'retro' : 'modern')}
       className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl transition-all ${
         isRetro
           ? 'retro-btn text-[8px] tracking-wider'
+          : isDark
+          ? 'bg-gray-800 border border-gray-700 text-gray-300 hover:bg-gray-700 shadow-lg'
           : 'bg-white/15 backdrop-blur-lg border border-white/25 text-white hover:bg-white/25 shadow-lg hover:shadow-xl hover:-translate-y-0.5'
       } ${className}`}
-      title={isRetro ? 'Switch to Modern' : 'Switch to Retro'}
+      title="Switch Theme"
     >
-      <span className="text-lg">{isRetro ? '✨' : '👾'}</span>
+      <span className="text-lg">{isRetro ? '👾' : isDark ? '🌙' : '✨'}</span>
       <span className={isRetro ? '' : 'text-[10px] font-bold uppercase tracking-widest opacity-80'}>
-        {isRetro ? 'MODERN' : 'RETRO'}
+        {isRetro ? 'RETRO' : isDark ? 'DARK' : 'MODERN'}
       </span>
     </button>
   );
@@ -1704,7 +1707,44 @@ function DobbleGame() {
             </div>
 
             <div className="mt-6 w-full flex flex-col items-center">
-              <ThemeToggle className="mb-4" />
+              <div className="flex flex-col gap-2 w-full mb-6">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="h-[1px] flex-1 bg-white/20"></div>
+                  <span className="text-white/40 text-[9px] font-bold uppercase tracking-[0.2em]">
+                    Modes
+                  </span>
+                  <div className="h-[1px] flex-1 bg-white/20"></div>
+                </div>
+                <div className="grid grid-cols-3 gap-2 w-full">
+                  {(['modern', 'dark', 'retro'] as const).map(mode => {
+                    const isActive = visualTheme === mode;
+                    return isRetro ? (
+                      <button
+                        key={mode}
+                        onClick={() => setVisualTheme(mode)}
+                        className={`retro-btn w-full py-2.5 rounded-xl font-bold text-[9px] flex flex-col items-center justify-center gap-1 ${isActive ? 'border-[var(--retro-cyan)] text-[var(--retro-cyan)] opacity-100' : 'opacity-60 hover:opacity-80'}`}
+                      >
+                        <span className="text-lg leading-none">{mode === 'modern' ? '✨' : mode === 'dark' ? '🌙' : '👾'}</span>
+                        <span>{mode.toUpperCase()}</span>
+                      </button>
+                    ) : (
+                      <button
+                        key={mode}
+                        onClick={() => setVisualTheme(mode)}
+                        className={`w-full py-2.5 rounded-xl font-bold text-xs transition shadow-md flex flex-col items-center justify-center gap-1 backdrop-blur-md border ${
+                          isActive
+                            ? 'bg-white/30 text-white border-white/40'
+                            : 'bg-white/10 text-white/60 hover:bg-white/20 border-white/10'
+                        }`}
+                      >
+                        <span className="text-lg leading-none">{mode === 'modern' ? '✨' : mode === 'dark' ? '🌙' : '👾'}</span>
+                        <span>{mode.charAt(0).toUpperCase() + mode.slice(1)}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               <div className="flex flex-col gap-2 w-full">
                 {isRetro ? (
                   <button
