@@ -737,9 +737,15 @@ function DobbleGame() {
   const fetchGlobalLeaderboard = useCallback(async () => {
     setGlobalLoading(true);
     try {
-      const q = query(collection(db, 'scores'), orderBy('score', 'desc'), limit(20));
+      const q = query(collection(db, 'scores'), orderBy('score', 'desc'), limit(50));
       const snapshot = await getDocs(q);
-      setGlobalLeaderboard(snapshot.docs.map((d, idx) => ({
+      
+      const filteredDocs = snapshot.docs.filter(d => {
+        const data = d.data();
+        return data.profileName && data.profileName.trim() !== '';
+      }).slice(0, 20);
+
+      setGlobalLeaderboard(filteredDocs.map((d, idx) => ({
         id: d.id,
         rank: idx + 1,
         ...d.data(),
@@ -750,6 +756,10 @@ function DobbleGame() {
       setGlobalLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    fetchGlobalLeaderboard();
+  }, [fetchGlobalLeaderboard]);
 
   const handleCreateProfile = async () => {
     if (newName.trim() && user) {
