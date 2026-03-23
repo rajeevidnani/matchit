@@ -827,7 +827,7 @@ function DobbleGame() {
     }
     setIsSavingTheme(true);
     try {
-      const themeIcon = customThemeIcon;
+      const themeIcon = customThemeEmojis[0] || '✨';
       if (editingThemeId) {
         await setDoc(doc(db, 'customThemes', editingThemeId), {
           name: customThemeName.trim(),
@@ -1263,29 +1263,22 @@ function DobbleGame() {
                 >
                   <div className="grid grid-cols-6 gap-1.5 content-start pb-10">
                     {customThemeEmojis.map((emoji, idx) => (
-                      <button
+                      <div
                         key={idx}
-                        onClick={() => setCustomThemeIcon(emoji)}
-                        className={`w-11 h-11 bg-white rounded-xl flex items-center justify-center text-2xl hover:bg-purple-50 hover:scale-105 transition-all shadow-sm relative group ${emoji === customThemeIcon ? 'ring-2 ring-yellow-400 scale-105 z-10' : ''}`}
+                        className={`w-11 h-11 bg-white rounded-xl flex items-center justify-center text-2xl transition-all shadow-sm relative group hover:bg-purple-50 hover:scale-105`}
                       >
                         {emoji}
-                        {emoji === customThemeIcon && (
-                          <div className="absolute -bottom-1 -left-1 bg-yellow-400 text-[8px] font-black px-1 rounded border border-yellow-600 text-yellow-900 uppercase">Icon</div>
-                        )}
-                        <div 
+                        <button
                           onClick={(e) => {
                             e.stopPropagation();
                             const newEmojis = customThemeEmojis.filter(e => e !== emoji);
                             setCustomThemeEmojis(newEmojis);
-                            if (emoji === customThemeIcon) {
-                              setCustomThemeIcon(newEmojis[0] || '✨');
-                            }
                           }}
-                          className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity hover:scale-110"
+                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center shadow-md hover:scale-110 transition-transform cursor-pointer opacity-0 group-hover:opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
                         >
-                          <X className="w-3 h-3" />
-                        </div>
-                      </button>
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     ))}
                     {customThemeEmojis.length === 0 && (
                       <div className="col-span-full flex flex-col items-center justify-center text-white/50 text-center py-12">
@@ -1294,8 +1287,7 @@ function DobbleGame() {
                         <p className="text-[10px] mt-1">Go to the library to pick some emojis!</p>
                       </div>
                     )}
-                  </div>
-                </motion.div>
+                  </div>                </motion.div>
               )}
             </AnimatePresence>
           </div>
