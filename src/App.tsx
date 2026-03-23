@@ -607,14 +607,14 @@ function DobbleGame() {
   const panel = isRetro ? 'retro-panel' : 'bg-white/10 backdrop-blur-lg border border-white/20';
   const btn = isRetro ? 'retro-btn rounded-lg' : '';
 
-  const ThemeToggle = () => (
+  const ThemeToggle = ({ className = '' }: { className?: string }) => (
     <button
       onClick={() => setVisualTheme(v => v === 'modern' ? 'retro' : 'modern')}
-      className={`fixed bottom-4 right-4 z-[200] flex items-center gap-2 px-3 py-2 rounded-xl transition-all ${
+      className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl transition-all ${
         isRetro
           ? 'retro-btn text-[8px] tracking-wider'
           : 'bg-white/15 backdrop-blur-lg border border-white/25 text-white hover:bg-white/25 shadow-lg hover:shadow-xl hover:-translate-y-0.5'
-      }`}
+      } ${className}`}
       title={isRetro ? 'Switch to Modern' : 'Switch to Retro'}
     >
       <span className="text-lg">{isRetro ? '✨' : '👾'}</span>
@@ -982,7 +982,7 @@ function DobbleGame() {
   if (!user) {
     return (
       <div className={`min-h-screen ${bg} flex items-center justify-center p-4 ${isRetro ? 'retro-theme retro-scanlines' : 'font-sans'}`}>
-        <ThemeToggle />
+        <ThemeToggle className="absolute top-4 right-4 z-[200]" />
         <div className={`${panel} p-8 md:p-12 rounded-[2rem] text-center max-w-md w-full shadow-2xl`}>
           <div className={`w-24 h-24 ${isRetro ? 'bg-[#2a2a4e] border-2 border-[var(--retro-border)]' : 'bg-white'} rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg`}>
             <span className="text-5xl">🎯</span>
@@ -1019,7 +1019,7 @@ function DobbleGame() {
   if (!profileName || isCreatingProfile) {
     return (
       <div className={`min-h-screen ${bg} flex flex-col items-center justify-start pt-12 md:pt-20 p-4 ${isRetro ? 'retro-theme retro-scanlines' : 'font-sans'}`}>
-        <ThemeToggle />
+        <ThemeToggle className="absolute top-4 right-4 z-[200]" />
         <div className={`${panel} p-6 md:p-8 rounded-[2rem] text-center max-w-md w-full shadow-2xl`}>
           <div className={`w-16 h-16 ${isRetro ? 'bg-[#2a2a4e] border-2 border-[var(--retro-border)]' : 'bg-white'} rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg`}>
             <UserIcon className={`w-8 h-8 ${isRetro ? 'text-[var(--retro-cyan)]' : 'text-purple-600'}`} />
@@ -1128,7 +1128,7 @@ function DobbleGame() {
   if (isBuildingTheme) {
     return (
       <div className={`min-h-screen ${bg} flex flex-col items-center p-4 ${isRetro ? 'retro-theme retro-scanlines' : 'font-sans'}`}>
-        <ThemeToggle />
+        <ThemeToggle className="absolute top-4 right-4 z-[200]" />
         <div className={`${panel} p-3 rounded-[2rem] w-full max-w-md shadow-2xl flex flex-col h-[98vh] max-h-[1200px]`}>
           <div className="relative mb-3 shrink-0">
             <div className="flex items-center gap-2">
@@ -1352,7 +1352,6 @@ function DobbleGame() {
   if (!isPlaying && !gameOver) {
     return (
       <div className={`min-h-screen ${bg} flex flex-col items-center justify-start pt-4 md:pt-8 p-4 relative overflow-hidden ${isRetro ? 'retro-theme retro-scanlines' : 'font-sans'}`}>
-        <ThemeToggle />
         {/* Background Pattern */}
         {!isRetro && <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(#fff 2px, transparent 2px)', backgroundSize: '30px 30px' }}></div>}
 
@@ -1695,8 +1694,9 @@ function DobbleGame() {
               </AnimatePresence>
             </div>
 
-            <div className="mt-6">
-              <div className="flex flex-col gap-2">
+            <div className="mt-6 w-full flex flex-col items-center">
+              <ThemeToggle className="mb-4" />
+              <div className="flex flex-col gap-2 w-full">
                 {isRetro ? (
                   <button
                     onClick={() => startGame(undefined, true)}
