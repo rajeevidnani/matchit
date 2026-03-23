@@ -352,7 +352,14 @@ const GlobalLeaderboard = ({ data, currentUserId, isLoading, isRetro, onRefresh 
                 ? entry.rank === 1 ? 'text-[var(--retro-gold)]' : 'text-[var(--retro-text-dim)]'
                 : entry.rank === 1 ? 'text-yellow-400' : 'text-white/40'
             }`}>{entry.rank}</span>
-            <span className={`font-medium truncate max-w-[150px] ${isRetro ? 'text-[var(--retro-text)]' : 'text-white'}`}>{entry.profileName}</span>
+            <div className="flex items-center gap-2">
+              <span className={`font-medium truncate max-w-[120px] ${isRetro ? 'text-[var(--retro-text)]' : 'text-white'}`}>{entry.profileName}</span>
+              {entry.hitRate !== undefined && (
+                <span className={`text-[10px] font-bold opacity-50 ${isRetro ? 'text-[var(--retro-cyan)]' : 'text-white/60'}`}>
+                  {entry.hitRate}%
+                </span>
+              )}
+            </div>
           </div>
           <span className={`font-black ${isRetro ? 'text-[var(--retro-gold)]' : 'text-white'}`}>{entry.score}</span>
         </div>
@@ -576,13 +583,13 @@ function DobbleGame() {
   const [editingProfile, setEditingProfile] = useState<any | null>(null);
   const [newName, setNewName] = useState('');
   const [theme, setTheme] = useState<Theme>('standard');
-  const [activeTab, setActiveTab] = useState<'saved-themes' | 'leaderboard' | 'profiles'>('profiles');
+  const [activeTab, setActiveTab] = useState<'saved-themes' | 'leaderboard' | 'profiles'>('leaderboard');
   const [customThemeEmojis, setCustomThemeEmojis] = useState<string[]>([]);
   const [isBuildingTheme, setIsBuildingTheme] = useState(false);
   const [randomizerMessage, setRandomizerMessage] = useState<string | null>(null);
   const [savedThemes, setSavedThemes] = useState<any[]>([]);
   const [globalLeaderboard, setGlobalLeaderboard] = useState<any[]>([]);
-  const [leaderboardTab, setLeaderboardTab] = useState<'my' | 'global'>('my');
+  const [leaderboardTab, setLeaderboardTab] = useState<'my' | 'global'>('global');
   const [globalLoading, setGlobalLoading] = useState(false);
   const [customThemeName, setCustomThemeName] = useState('');
   const [customThemeIcon, setCustomThemeIcon] = useState('✨');
@@ -1673,7 +1680,7 @@ function DobbleGame() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.2 }}
-                    className="mb-8"
+                    className="mb-8 mt-6"
                   >
                     <LeaderboardToggle tab={leaderboardTab} onTabChange={(t) => { setLeaderboardTab(t); if (t === 'global' && globalLeaderboard.length === 0) fetchGlobalLeaderboard(); }} isRetro={isRetro} />
                     {leaderboardTab === 'my' ? (
@@ -1752,6 +1759,10 @@ function DobbleGame() {
               </motion.div>
             )}
           </AnimatePresence>
+          
+          <div className={`mt-8 pb-4 text-center opacity-40 text-xs font-bold uppercase tracking-[0.2em] ${isRetro ? 'text-[var(--retro-text-dim)] text-[8px]' : 'text-white'}`}>
+            a Bettillini production
+          </div>
         </div>
       </div>
     );
