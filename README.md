@@ -1,20 +1,40 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Match It
 
-# Run and deploy your AI Studio app
+A fast emoji matching game in the style of Dobble / Spot It: two cards are on screen, they share
+**exactly one** symbol, and you tap it before the clock runs out.
 
-This contains everything you need to run your app locally.
+I built it for my niece. It started as an experiment in how far I could get vibe-coding a real,
+playable app — one with accounts, saved scores and custom content — rather than another toy demo.
+It works, she plays it, and that was the bar.
 
-View your app in AI Studio: https://ai.studio/apps/d133d9b5-8b1a-4845-9c64-b9035c3b028a
+## How it plays
 
-## Run Locally
+- Two cards, one shared emoji, find it as fast as you can
+- Score climbs with speed; high scores are saved to your profile
+- **Themes** change the whole emoji set — animals, food, faces, whatever you like
+- **Build your own theme** by picking a custom set of emojis, saved to your account
 
-**Prerequisites:**  Node.js
+The card generation uses the maths behind Dobble: a finite projective plane of order 7, which gives
+57 cards and 57 symbols where any two cards share precisely one. That property is what makes the
+game work, and it is generated rather than hand-built (`src/utils/dobbleLogic.ts`).
 
+## Stack
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+React · TypeScript · Vite · Tailwind · Firebase (auth + Firestore for profiles, scores and custom
+themes). Firestore rules scope every read and write to the owning user; leaderboard scores are the
+only public read.
+
+## Run it
+
+```bash
+npm install
+cp .env.example .env.local   # add your own Gemini API key if you want the AI features
+npm run dev
+```
+
+The Firebase config in `firebase-applet-config.json` is a public client identifier, not a secret —
+access is controlled by the Firestore rules in `firestore.rules`.
+
+---
+
+Built by [Rajeev Idnani](https://www.linkedin.com/in/rajeev-idnani).
